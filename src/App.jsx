@@ -1,5 +1,18 @@
 function App() {
 
+  const games = [
+    {
+      id: 1,
+      title: "The Witcher 3: Wild Hunt",
+      genre: "RPG",
+    },
+    {
+      id: 2,
+      title: "Elden Ring",
+      genre: "Action RPG",
+    },
+  ];
+
   return (
 
     <main>
@@ -8,8 +21,13 @@ function App() {
       <p>Explore games and find your next favorite.</p>
 
       <section>
-        <GameCard title="The Witcher 3: Wild Hunt" genre="RPG"/>
-        <GameCard title="Elden Ring" genre="Action RPG"/>
+        {games.map((game) => (
+          <GameCard
+            key={game.id}
+            title={game.title}
+            genre={game.genre}
+          />
+        ))}
       </section>
     </main>
 
