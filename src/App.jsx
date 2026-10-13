@@ -3,6 +3,9 @@ import { useState } from "react";
 function App() {
 
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedGenre, setSelectedGenre] = useState("All");
+
+  const genres = ["All", "RPG", "Action RPG"];
 
   const games = [
     {
@@ -17,7 +20,13 @@ function App() {
     },
   ];
 
-  const filteredGames = games.filter((game) => game.title.toLowerCase().includes(searchTerm.toLowerCase()));
+  const filteredGames = games.filter((game) => {
+    const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesGenre = selectedGenre === "All" || game.genre === selectedGenre;
+
+    return matchesSearch && matchesGenre;
+  });
 
   return (
 
@@ -28,6 +37,14 @@ function App() {
 
       <input type="text" placeholder="Search games..."
       onChange={(event) => setSearchTerm(event.target.value)}/>
+
+      <select onChange={(event) => setSelectedGenre(event.target.value)}>
+        {genres.map((genre) => 
+          <option key={genre} value={genre}>
+            {genre}
+          </option>
+        )}
+      </select>
 
       <section>
         {filteredGames.map((game) => (
