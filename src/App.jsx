@@ -1,4 +1,8 @@
+import { useState } from "react";
+
 function App() {
+
+  const [searchTerm, setSearchTerm] = useState("");
 
   const games = [
     {
@@ -13,6 +17,8 @@ function App() {
     },
   ];
 
+  const filteredGames = games.filter((game) => game.title.toLowerCase().includes(searchTerm.toLowerCase()));
+
   return (
 
     <main>
@@ -20,8 +26,11 @@ function App() {
       <h1>Game Catalog</h1>
       <p>Explore games and find your next favorite.</p>
 
+      <input type="text" placeholder="Search games..."
+      onChange={(event) => setSearchTerm(event.target.value)}/>
+
       <section>
-        {games.map((game) => (
+        {filteredGames.map((game) => (
           <GameCard
             key={game.id}
             title={game.title}
@@ -29,6 +38,7 @@ function App() {
           />
         ))}
       </section>
+
     </main>
 
   );
