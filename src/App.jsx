@@ -42,6 +42,8 @@ function App() {
         onSearchChange={setSearchTerm}
       />
 
+      <p>{filteredGames.length} games</p>
+
       <select onChange={(event) => setSelectedGenre(event.target.value)}>
         {genres.map((genre) => 
           <option key={genre} value={genre}>
