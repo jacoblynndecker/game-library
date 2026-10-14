@@ -1,4 +1,6 @@
 import { useState } from "react";
+import GameCard from "./components/GameCard";
+import SearchBar from "./components/SearchBar";
 
 function App() {
 
@@ -35,8 +37,10 @@ function App() {
       <h1>Game Catalog</h1>
       <p>Explore games and find your next favorite.</p>
 
-      <input type="text" placeholder="Search games..."
-      onChange={(event) => setSearchTerm(event.target.value)}/>
+      <SearchBar
+        searchTerm={searchTerm}
+        onSearchChange={setSearchTerm}
+      />
 
       <select onChange={(event) => setSelectedGenre(event.target.value)}>
         {genres.map((genre) => 
@@ -57,18 +61,6 @@ function App() {
       </section>
 
     </main>
-
-  );
-}
-
-function GameCard(props) {
-
-  return (
-
-    <div>
-      <h2>{props.title}</h2>
-      <p>{props.genre}</p>
-    </div>
 
   );
 }
