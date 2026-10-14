@@ -30,6 +30,11 @@ function App() {
     return matchesSearch && matchesGenre;
   });
 
+  function resetFilters() {
+    setSearchTerm("");
+    setSelectedGenre("All");
+  }
+
   return (
 
     <main>
@@ -40,9 +45,15 @@ function App() {
       <SearchBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
+        onResetFilters={resetFilters}
       />
 
-      <select onChange={(event) => setSelectedGenre(event.target.value)}>
+      <p>{filteredGames.length} games</p>
+
+      <select 
+        value={selectedGenre}
+        onChange={(event) => setSelectedGenre(event.target.value)}>
+          
         {genres.map((genre) => 
           <option key={genre} value={genre}>
             {genre}
