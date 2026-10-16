@@ -30,6 +30,16 @@ function App() {
     return matchesSearch && matchesGenre;
   });
 
+  let gameCountMessage;
+
+  if (filteredGames.length === 0) {
+    gameCountMessage = "No results";
+  } else if (filteredGames.length === 1) {
+    gameCountMessage = "1 result"; 
+  } else {
+    gameCountMessage = `${filteredGames.length} results`;
+  }
+
   function resetFilters() {
     setSearchTerm("");
     setSelectedGenre("All");
@@ -48,7 +58,7 @@ function App() {
         onResetFilters={resetFilters}
       />
 
-      <p>{filteredGames.length} games</p>
+      <p>{gameCountMessage}</p>
 
       <select 
         value={selectedGenre}
