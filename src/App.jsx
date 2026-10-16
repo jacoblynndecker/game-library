@@ -40,6 +40,8 @@ function App() {
     gameCountMessage = `${filteredGames.length} results`;
   }
 
+  const isResetDisabled = searchTerm === "" && selectedGenre === "All";
+
   function resetFilters() {
     setSearchTerm("");
     setSelectedGenre("All");
@@ -56,6 +58,7 @@ function App() {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onResetFilters={resetFilters}
+        isResetDisabled={isResetDisabled}
       />
 
       <p>{gameCountMessage}</p>

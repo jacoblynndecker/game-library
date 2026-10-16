@@ -1,4 +1,4 @@
-function SearchBar({ searchTerm, onSearchChange, onResetFilters }) {
+function SearchBar({ searchTerm, onSearchChange, onResetFilters, isResetDisabled }) {
 
     return (
         <>
@@ -9,7 +9,7 @@ function SearchBar({ searchTerm, onSearchChange, onResetFilters }) {
                 onChange={(event) => onSearchChange(event.target.value)}
             />
 
-            <button onClick={onResetFilters}>
+            <button disabled={isResetDisabled} onClick={onResetFilters}>
                 Reset Filters
             </button>
         </>
