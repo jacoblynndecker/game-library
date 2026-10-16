@@ -30,6 +30,18 @@ function App() {
     return matchesSearch && matchesGenre;
   });
 
+  let gameCountMessage;
+
+  if (filteredGames.length === 0) {
+    gameCountMessage = "No results";
+  } else if (filteredGames.length === 1) {
+    gameCountMessage = "1 result"; 
+  } else {
+    gameCountMessage = `${filteredGames.length} results`;
+  }
+
+  const isResetDisabled = searchTerm === "" && selectedGenre === "All";
+
   function resetFilters() {
     setSearchTerm("");
     setSelectedGenre("All");
@@ -46,9 +58,10 @@ function App() {
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
         onResetFilters={resetFilters}
+        isResetDisabled={isResetDisabled}
       />
 
-      <p>{filteredGames.length} games</p>
+      <p>{gameCountMessage}</p>
 
       <select 
         value={selectedGenre}
