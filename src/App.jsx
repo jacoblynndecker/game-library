@@ -23,12 +23,17 @@ function App() {
           genre: game.genres[0].name
         };
       });
+
+      setGames(mappedGames);
     }
 
     fetchGames();
   }, []);
 
-  const genres = ["All", "RPG", "Action RPG"];
+  const genres = [
+    "All",
+    ...new Set(games.map((game) => game.genre)),
+  ];
 
   const filteredGames = games.filter((game) => {
     const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase());
