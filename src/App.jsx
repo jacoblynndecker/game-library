@@ -1,25 +1,38 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import GameCard from "./components/GameCard";
 import SearchBar from "./components/SearchBar";
 
 function App() {
 
+  const [games, setGames] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
 
-  const genres = ["All", "RPG", "Action RPG"];
+  useEffect(() => {
+    async function fetchGames() {
+      const apiKey = import.meta.env.VITE_RAWG_API_KEY;
+      const url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=10`;
 
-  const games = [
-    {
-      id: 1,
-      title: "The Witcher 3: Wild Hunt",
-      genre: "RPG",
-    },
-    {
-      id: 2,
-      title: "Elden Ring",
-      genre: "Action RPG",
-    },
+      const response = await fetch(url);
+      const data = await response.json();
+      
+      const mappedGames = data.results.map((game) => {
+        return {
+          id: game.id,
+          title: game.name,
+          genre: game.genres[0].name
+        };
+      });
+
+      setGames(mappedGames);
+    }
+
+    fetchGames();
+  }, []);
+
+  const genres = [
+    "All",
+    ...new Set(games.map((game) => game.genre)),
   ];
 
   const filteredGames = games.filter((game) => {
