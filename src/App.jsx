@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import GameCard from "./components/GameCard";
 import SearchBar from "./components/SearchBar";
+import GameDetails from "./components/GameDetails";
 
 function App() {
 
   const [games, setGames] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
+  const [selectedGame, setSelectedGame] = useState(null);
 
   useEffect(() => {
     async function fetchGames() {
@@ -20,7 +22,10 @@ function App() {
         return {
           id: game.id,
           title: game.name,
-          genre: game.genres[0].name
+          genre: game.genres[0].name,
+          image: game.background_image,
+          rating: game.rating,
+          released: game.released
         };
       });
 
@@ -63,40 +68,49 @@ function App() {
   return (
 
     <main>
+      {selectedGame ? (
+        <GameDetails 
+          game={selectedGame}
+          onBack={() => setSelectedGame(null)}
+        />
+      ) : (
+      <>
+        <h1>Game Catalog</h1>
+        <p>Explore games and find your next favorite.</p>
 
-      <h1>Game Catalog</h1>
-      <p>Explore games and find your next favorite.</p>
+        <SearchBar
+          searchTerm={searchTerm}
+          onSearchChange={setSearchTerm}
+          onResetFilters={resetFilters}
+          isResetDisabled={isResetDisabled}
+        />
 
-      <SearchBar
-        searchTerm={searchTerm}
-        onSearchChange={setSearchTerm}
-        onResetFilters={resetFilters}
-        isResetDisabled={isResetDisabled}
-      />
+        <p>{gameCountMessage}</p>
 
-      <p>{gameCountMessage}</p>
-
-      <select 
-        value={selectedGenre}
-        onChange={(event) => setSelectedGenre(event.target.value)}>
+        <select 
+          value={selectedGenre}
+          onChange={(event) => setSelectedGenre(event.target.value)}>
           
-        {genres.map((genre) => 
-          <option key={genre} value={genre}>
-            {genre}
-          </option>
-        )}
-      </select>
+          {genres.map((genre) => 
+            <option key={genre} value={genre}>
+              {genre}
+            </option>
+          )}
+        </select>
 
-      <section>
-        {filteredGames.map((game) => (
-          <GameCard
-            key={game.id}
-            title={game.title}
-            genre={game.genre}
-          />
-        ))}
-      </section>
-
+        <section>
+          {filteredGames.map((game) => (
+            <GameCard
+              key={game.id}
+              title={game.title}
+              genre={game.genre}
+              game={game}
+              onSelect={setSelectedGame}
+            />
+          ))}
+        </section>
+        </>
+      )}
     </main>
 
   );
