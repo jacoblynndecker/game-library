@@ -2,13 +2,23 @@ function GameCard( {title, genre, game, onSelect }) {
 
   return (
     <div 
-      className="game-card"
+      className="cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
       onClick={() => onSelect(game)}
     >
-      <img src={game.image} alt={game.title} />
-      
-      <h2>{title}</h2>
-      <p>{genre}</p>
+      <img
+        className="h-48 w-full object-cover"
+        src={game.image} 
+        alt={game.title} 
+      />
+
+    <div className="p-4">
+      <h2 className="text-xl font-semibold text-gray-900">
+        {title}
+      </h2>
+      <p className="mt-1 text-sm text-gray-500">
+        {genre}
+      </p>
+    </div>
     </div>
 
   );

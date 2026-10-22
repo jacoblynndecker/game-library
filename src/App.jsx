@@ -67,7 +67,8 @@ function App() {
 
   return (
 
-    <main>
+    <main className="min-h-screen bg-gray-100">
+      <div className="mx-auto max-w-7xl p-8">
       {selectedGame ? (
         <GameDetails 
           game={selectedGame}
@@ -75,8 +76,13 @@ function App() {
         />
       ) : (
       <>
-        <h1>Game Catalog</h1>
-        <p>Explore games and find your next favorite.</p>
+        <h1 className="text-4xl font-bold text-gray-900">
+          Game Catalog
+        </h1>
+
+        <p className="mt-2 mb-6 text-gray-600">
+          Explore games and find your next favorite.
+        </p>
 
         <SearchBar
           searchTerm={searchTerm}
@@ -85,9 +91,12 @@ function App() {
           isResetDisabled={isResetDisabled}
         />
 
-        <p>{gameCountMessage}</p>
+        <p className="mt-6 text-sm text-gray-500">
+          {gameCountMessage}
+        </p>
 
-        <select 
+        <select
+          className="mt-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900" 
           value={selectedGenre}
           onChange={(event) => setSelectedGenre(event.target.value)}>
           
@@ -98,7 +107,7 @@ function App() {
           )}
         </select>
 
-        <section>
+        <section className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {filteredGames.map((game) => (
             <GameCard
               key={game.id}
@@ -111,6 +120,7 @@ function App() {
         </section>
         </>
       )}
+      </div>
     </main>
 
   );
