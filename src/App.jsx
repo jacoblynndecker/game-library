@@ -66,7 +66,10 @@ function App() {
 
     <main>
       {selectedGame ? (
-        <GameDetails game={selectedGame} />
+        <GameDetails 
+          game={selectedGame}
+          onBack={() => setSelectedGame(null)}
+        />
       ) : (
       <>
         <h1>Game Catalog</h1>
