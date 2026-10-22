@@ -22,7 +22,10 @@ function App() {
         return {
           id: game.id,
           title: game.name,
-          genre: game.genres[0].name
+          genre: game.genres[0].name,
+          image: game.background_image,
+          rating: game.rating,
+          released: game.released
         };
       });
 
