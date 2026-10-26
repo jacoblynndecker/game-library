@@ -9,6 +9,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedGame, setSelectedGame] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     async function fetchGames() {
@@ -67,7 +68,11 @@ function App() {
 
   return (
 
-    <main className="min-h-screen bg-gray-100">
+    <main 
+      className={`min-h-screen ${
+        darkMode ? "bg-gray-950" : "bg-gray-100"
+      }`}
+    >
       <div className="mx-auto max-w-7xl p-8">
       {selectedGame ? (
         <GameDetails 
@@ -76,12 +81,39 @@ function App() {
         />
       ) : (
       <>
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1
+          className={`text-4xl font-bold ${
+            darkMode ? "text-white" : "text-gray-900"
+          }`}
+        >
           Game Catalog
         </h1>
 
-        <p className="mt-2 mb-6 text-gray-600">
-          Explore games and find your next favorite.
+        <div className="mt-4 flex items-center gap-2">
+          <button
+            className={`relative h-8 w-13 rounded-full transition-colors ${
+              darkMode ? "bg-blue-400" : "bg-gray-400"
+            }`}
+            onClick={() => setDarkMode(!darkMode)}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 h-7 w-7 rounded-full bg-white transition-transform ${
+                darkMode ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+
+          <span className="text-base font-medium text-gray-700">
+            Dark Mode
+          </span>
+        </div>
+
+        <p 
+          className={`mt-2 mb-6 ${
+            darkMode ? "text-gray-300" : "text-gray-600"
+          }`}
+        >
+            Explore games and find your next favorite.
         </p>
 
         <SearchBar
@@ -89,16 +121,26 @@ function App() {
           onSearchChange={setSearchTerm}
           onResetFilters={resetFilters}
           isResetDisabled={isResetDisabled}
+          darkMode={darkMode}
         />
 
-        <p className="mt-6 text-sm text-gray-500">
+        <p
+          className={`mt-6 text-sm ${
+            darkMode ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
           {gameCountMessage}
         </p>
 
         <select
-          className="mt-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900" 
+          className={`mt-3 rounded-lg px-4 py-2 ${
+            darkMode
+              ? "border-gray-600 bg-gray-800 text-white"
+              : "border-gray-300 bg-white text-gray-900"
+          }`} 
           value={selectedGenre}
-          onChange={(event) => setSelectedGenre(event.target.value)}>
+          onChange={(event) => setSelectedGenre(event.target.value)}
+        >
           
           {genres.map((genre) => 
             <option key={genre} value={genre}>
@@ -115,6 +157,7 @@ function App() {
               genre={game.genre}
               game={game}
               onSelect={setSelectedGame}
+              darkMode={darkMode}
             />
           ))}
         </section>
