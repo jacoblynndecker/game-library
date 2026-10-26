@@ -9,6 +9,7 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedGame, setSelectedGame] = useState(null);
+  const [darkMode, setDarkMode] = useState(false);
 
   useEffect(() => {
     async function fetchGames() {
@@ -79,6 +80,25 @@ function App() {
         <h1 className="text-4xl font-bold text-gray-900">
           Game Catalog
         </h1>
+
+        <div className="mt-4 flex items-center gap-2">
+          <button
+            className={`relative h-8 w-13 rounded-full transition-colors ${
+              darkMode ? "bg-blue-400" : "bg-gray-400"
+            }`}
+            onClick={() => setDarkMode(!darkMode)}
+          >
+            <span
+              className={`absolute top-0.5 left-0.5 h-7 w-7 rounded-full bg-white transition-transform ${
+                darkMode ? "translate-x-5" : "translate-x-0"
+              }`}
+            />
+          </button>
+
+          <span className="text-base font-medium text-gray-700">
+            Dark Mode
+          </span>
+        </div>
 
         <p className="mt-2 mb-6 text-gray-600">
           Explore games and find your next favorite.
