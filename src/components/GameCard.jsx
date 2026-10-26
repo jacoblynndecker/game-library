@@ -1,8 +1,12 @@
-function GameCard( {title, genre, game, onSelect }) {
+function GameCard( {title, genre, game, onSelect, darkMode }) {
 
   return (
     <div 
-      className="cursor-pointer overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"
+      className={`cursor-pointer overflow-hidden rounded-xl border shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${
+        darkMode
+          ? "border-gray-700 bg-gray-800"
+          : "border-gray-200 bg-white"
+      }`}
       onClick={() => onSelect(game)}
     >
       <img
@@ -12,10 +16,18 @@ function GameCard( {title, genre, game, onSelect }) {
       />
 
     <div className="p-4">
-      <h2 className="text-xl font-semibold text-gray-900">
+      <h2 
+        className={`text-xl font-semibold ${
+          darkMode ? "text-white" : "text-gray-900"
+        }`}
+      >
         {title}
       </h2>
-      <p className="mt-1 text-sm text-gray-500">
+      <p 
+        className={`mt-1 text-sm ${
+          darkMode ? "text-gray-400" : "text-gray-500"
+        }`}
+      >
         {genre}
       </p>
     </div>

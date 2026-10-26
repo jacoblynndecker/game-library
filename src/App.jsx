@@ -68,7 +68,11 @@ function App() {
 
   return (
 
-    <main className="min-h-screen bg-gray-100">
+    <main 
+      className={`min-h-screen ${
+        darkMode ? "bg-gray-950" : "bg-gray-100"
+      }`}
+    >
       <div className="mx-auto max-w-7xl p-8">
       {selectedGame ? (
         <GameDetails 
@@ -77,7 +81,11 @@ function App() {
         />
       ) : (
       <>
-        <h1 className="text-4xl font-bold text-gray-900">
+        <h1
+          className={`text-4xl font-bold ${
+            darkMode ? "text-white" : "text-gray-900"
+          }`}
+        >
           Game Catalog
         </h1>
 
@@ -100,8 +108,12 @@ function App() {
           </span>
         </div>
 
-        <p className="mt-2 mb-6 text-gray-600">
-          Explore games and find your next favorite.
+        <p 
+          className={`mt-2 mb-6 ${
+            darkMode ? "text-gray-300" : "text-gray-600"
+          }`}
+        >
+            Explore games and find your next favorite.
         </p>
 
         <SearchBar
@@ -109,16 +121,26 @@ function App() {
           onSearchChange={setSearchTerm}
           onResetFilters={resetFilters}
           isResetDisabled={isResetDisabled}
+          darkMode={darkMode}
         />
 
-        <p className="mt-6 text-sm text-gray-500">
+        <p
+          className={`mt-6 text-sm ${
+            darkMode ? "text-gray-400" : "text-gray-500"
+          }`}
+        >
           {gameCountMessage}
         </p>
 
         <select
-          className="mt-3 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900" 
+          className={`mt-3 rounded-lg px-4 py-2 ${
+            darkMode
+              ? "border-gray-600 bg-gray-800 text-white"
+              : "border-gray-300 bg-white text-gray-900"
+          }`} 
           value={selectedGenre}
-          onChange={(event) => setSelectedGenre(event.target.value)}>
+          onChange={(event) => setSelectedGenre(event.target.value)}
+        >
           
           {genres.map((genre) => 
             <option key={genre} value={genre}>
@@ -135,6 +157,7 @@ function App() {
               genre={game.genre}
               game={game}
               onSelect={setSelectedGame}
+              darkMode={darkMode}
             />
           ))}
         </section>
