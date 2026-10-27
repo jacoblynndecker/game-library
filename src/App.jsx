@@ -78,6 +78,7 @@ function App() {
         <GameDetails 
           game={selectedGame}
           onBack={() => setSelectedGame(null)}
+          darkMode={darkMode}
         />
       ) : (
       <>
