@@ -9,7 +9,9 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedGame, setSelectedGame] = useState(null);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem("darkMode") === "true";
+  });
 
   useEffect(() => {
     async function fetchGames() {
@@ -38,6 +40,10 @@ function App() {
 
     fetchGames();
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("darkMode", darkMode);
+  }, [darkMode]);
 
   const genres = [
     "All",
