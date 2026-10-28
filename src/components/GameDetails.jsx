@@ -20,7 +20,7 @@ function GameDetails({ game, onBack, darkMode }) {
 
       <div className="grid gap-8 md:grid-cols-2">
         <img
-          className="w-full rounded-xl object-cover"
+          className="h-full max-h-[500px] w-full rounded-xl object-cover shadow-md"
           src={game.image}
           alt={game.title}
         />
@@ -30,19 +30,86 @@ function GameDetails({ game, onBack, darkMode }) {
             {game.title}
           </h2>
 
-          <p className="mt-2 text-gray-500">
+          <p 
+            className={`mt-2 ${
+                darkMode ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
             {game.genre}
           </p>
 
-          <p className="mt-6">
-            <span className="font-semibold">Rating:</span>{" "}
-            {game.rating}
-          </p>
+          <div className="mt-6 flex flex-wrap gap-4">
+            <div
+                className={`rounded-lg px-4 py-3 ${
+                    darkMode
+                        ? "bg-gray-700 text-gray-200"
+                        : "bg-gray-100 text-gray-700"
+                }`}
+            >
+                <p className="text-sm font-medium">Rating</p>
+                <p className="mt-1 text-lg font-semibold">
+                    ⭐ {game.rating}
+                </p>
+            </div>
 
-          <p className="mt-2">
-            <span className="font-semibold">Released:</span>{" "}
-            {game.released}
-          </p>
+            <div
+                className={`rounded-lg px-4 py-3 ${
+                    darkMode
+                        ? "bg-gray-700 text-gray-200"
+                        : "bg-gray-100 text-gray-700"
+                }`}
+            >
+                <p className="text-sm font-medium">Released</p>
+                <p className="mt-1 text-lg font-semibold">
+                    {game.released}
+                </p>
+            </div>
+
+            <div
+                className={`rounded-lg px-4 py-3 ${
+                    darkMode
+                        ? "bg-gray-700 text-gray-200"
+                        : "bg-gray-100 text-gray-700"
+                }`}
+            >
+                <p className="text-sm font-medium">Metacritic</p>
+                <p className="mt-1 text-lg font-semibold">
+                    {game.metacritic}
+                </p>
+            </div>
+
+            <div
+                className={`rounded-lg px-4 py-3 ${
+                    darkMode
+                        ? "bg-gray-700 text-gray-200"
+                        : "bg-gray-100 text-gray-700"
+                }`}
+            >
+                <p className="text-sm font-medium">Playtime</p>
+                <p className="mt-1 text-lg font-semibold">
+                    {game.playtime} hours
+                </p>
+            </div>
+          </div>
+
+          <div className="mt-6">
+            <h3 className="text-lg font-semibold">Platforms</h3>
+
+            <div className="mt-3 flex flex-wrap gap-2">
+              {game.platforms.map((item) => (
+                <span
+                  key={item.platform.id}
+                  className={`rounded-full px-3 py-1 text-sm ${
+                    darkMode
+                      ? "bg-gray-700 text-gray-200"
+                      : "bg-gray-100 text-gray-700"
+                  }`}
+                >
+                  {item.platform.name}
+                </span>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
