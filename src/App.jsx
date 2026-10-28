@@ -26,7 +26,10 @@ function App() {
           genre: game.genres[0].name,
           image: game.background_image,
           rating: game.rating,
-          released: game.released
+          released: game.released,
+          metacritic: game.metacritic,
+          playtime: game.playtime,
+          platforms: game.platforms 
         };
       });
 
@@ -78,6 +81,7 @@ function App() {
         <GameDetails 
           game={selectedGame}
           onBack={() => setSelectedGame(null)}
+          darkMode={darkMode}
         />
       ) : (
       <>
