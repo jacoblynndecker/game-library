@@ -12,10 +12,10 @@ function GameDetails({ game, onBack, darkMode }) {
           darkMode
             ? "bg-blue-500 hover:bg-blue-400"
             : "bg-blue-600 hover:bg-blue-500"
-        }`}
+        } hover:-translate-y-0.5 hover:shadow-md`}
         onClick={onBack}
       >
-        Back
+        ← Back
       </button>
 
       <div className="grid gap-8 md:grid-cols-2">
@@ -61,7 +61,11 @@ function GameDetails({ game, onBack, darkMode }) {
             >
                 <p className="text-sm font-medium">Released</p>
                 <p className="mt-1 text-lg font-semibold">
-                    {game.released}
+                    {new Date(game.released).toLocaleDateString("en-US", {
+                      month: "long",
+                      day: "numeric",
+                      year: "numeric"
+                    })}
                 </p>
             </div>
 
