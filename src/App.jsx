@@ -9,33 +9,31 @@ function App() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
   const [selectedGame, setSelectedGame] = useState(null);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(true);
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
 
   useEffect(() => {
     async function fetchGames() {
-      const apiKey = import.meta.env.VITE_RAWG_API_KEY;
-      const url = `https://api.rawg.io/api/games?key=${apiKey}&page_size=10`;
+      try {
+        const response = await fetch("/api/games");
 
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      const mappedGames = data.results.map((game) => {
-        return {
-          id: game.id,
-          title: game.name,
-          genre: game.genres[0].name,
-          image: game.background_image,
-          rating: game.rating,
-          released: game.released,
-          metacritic: game.metacritic,
-          playtime: game.playtime,
-          platforms: game.platforms 
-        };
-      });
+        if (!response.ok) {
+          throw new Error("Failed to fetch games");
+        }
 
-      setGames(mappedGames);
+        const data = await response.json();
+
+        setGames(data);
+      } catch (error) {
+        console.error("Error fetching games: ", error);
+        setError("Unable to load games. Please try again later.");
+
+      } finally {
+        setLoading(false);
+      }
     }
 
     fetchGames();
@@ -134,13 +132,15 @@ function App() {
           darkMode={darkMode}
         />
 
-        <p
-          className={`mt-6 text-sm ${
-            darkMode ? "text-gray-400" : "text-gray-500"
-          }`}
-        >
-          {gameCountMessage}
-        </p>
+        {!loading && !error && (
+          <p
+            className={`mt-6 text-sm ${
+              darkMode ? "text-gray-400" : "text-gray-500"
+            }`}
+          >
+            {gameCountMessage}
+          </p>
+        )}
 
         <select
           className={`mt-3 rounded-lg px-4 py-2 ${
@@ -159,18 +159,38 @@ function App() {
           )}
         </select>
 
-        <section className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filteredGames.map((game) => (
-            <GameCard
-              key={game.id}
-              title={game.title}
-              genre={game.genre}
-              game={game}
-              onSelect={setSelectedGame}
-              darkMode={darkMode}
-            />
-          ))}
-        </section>
+        {error && (
+          <p className="mt-6 rounded-lg bg-red-100 p-4 text-red-700">
+            {error}
+          </p>
+        )}
+
+        {loading && (
+          <p className="mt-6 text-gray-500">
+            Loading games...
+          </p>
+        )}
+
+        {!loading && !error && filteredGames.length === 0 && (
+          <p className="mt-6 text-gray-500">
+            No games found. Try adjusting your search or filters.
+          </p>
+        )}
+
+        {!loading && !error && ( 
+          <section className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {filteredGames.map((game) => (
+              <GameCard
+                key={game.id}
+                title={game.title}
+                genre={game.genre}
+                game={game}
+                onSelect={setSelectedGame}
+                darkMode={darkMode}
+              />
+            ))}
+          </section>
+        )}
         </>
       )}
       </div>
