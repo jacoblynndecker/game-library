@@ -94,8 +94,6 @@ app.get("/api/games", async (req, res) => {
           released: game.first_release_date
             ? new Date(game.first_release_date * 1000).toISOString()
             : null,
-          metacritic: null,
-          playtime: null,
           platforms: (game.platforms ?? []).map((platform) => ({
             platform,
           })),

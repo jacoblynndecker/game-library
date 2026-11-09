@@ -61,37 +61,13 @@ function GameDetails({ game, onBack, darkMode }) {
             >
                 <p className="text-sm font-medium">Released</p>
                 <p className="mt-1 text-lg font-semibold">
-                    {new Date(game.released).toLocaleDateString("en-US", {
-                      month: "long",
-                      day: "numeric",
-                      year: "numeric"
-                    })}
-                </p>
-            </div>
-
-            <div
-                className={`rounded-lg px-4 py-3 ${
-                    darkMode
-                        ? "bg-gray-700 text-gray-200"
-                        : "bg-gray-100 text-gray-700"
-                }`}
-            >
-                <p className="text-sm font-medium">Metacritic</p>
-                <p className="mt-1 text-lg font-semibold">
-                    {game.metacritic}
-                </p>
-            </div>
-
-            <div
-                className={`rounded-lg px-4 py-3 ${
-                    darkMode
-                        ? "bg-gray-700 text-gray-200"
-                        : "bg-gray-100 text-gray-700"
-                }`}
-            >
-                <p className="text-sm font-medium">Playtime</p>
-                <p className="mt-1 text-lg font-semibold">
-                    {game.playtime} hours
+                  {game.released
+                    ? new Date(game.released).toLocaleDateString("en-US", {
+                        month: "long",
+                        day: "numeric",
+                        year: "numeric",
+                    })
+                  : "Unknown"}
                 </p>
             </div>
           </div>
