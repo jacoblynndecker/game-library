@@ -13,6 +13,7 @@ function App() {
   const [selectedGame, setSelectedGame] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [favorites, setFavorites] = useState([]);
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
@@ -73,6 +74,14 @@ function App() {
   function resetFilters() {
     setSearchTerm("");
     setSelectedGenre("All");
+  }
+
+  function toggleFavorite(gameId) {
+    setFavorites((prevFavorites) =>
+      prevFavorites.includes(gameId)
+        ? prevFavorites.filter((id) => id !== gameId)
+        : [...prevFavorites, gameId]
+    );
   }
 
   return (
@@ -251,6 +260,8 @@ function App() {
                 game={game}
                 onSelect={setSelectedGame}
                 darkMode={darkMode}
+                isFavorite={favorites.includes(game.id)}
+                onToggleFavorite={() => toggleFavorite(game.id)}
               />
             ))}
           </section>
