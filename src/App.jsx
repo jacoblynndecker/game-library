@@ -1,28 +1,40 @@
 import { useState, useEffect } from "react";
-import GameCard from "./components/GameCard";
-import SearchBar from "./components/SearchBar";
+
 import GameDetails from "./components/GameDetails";
-import { RotateCcw, ChevronDown, Check } from "lucide-react";
+import GameHeader from "./components/GameHeader";
+import GameFilters from "./components/GameFilters";
+import GameGrid from "./components/GameGrid";
 
 function App() {
 
+  // Game data and search/filter state
   const [games, setGames] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedGenre, setSelectedGenre] = useState("All");
+  const [selectedCollection, setSelectedCollection] = useState("All Games");
+
+  // Dropdown menu state
   const [isGenreMenuOpen, setIsGenreMenuOpen] = useState(false);
   const [isCollectionMenuOpen, setIsCollectionMenuOpen] = useState(false);
+
+  // Selected game and API loading/error state
   const [selectedGame, setSelectedGame] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+
+  // Favorites state, initialized from localStorage
   const [favorites, setFavorites] = useState(() => {
     const savedFavorites = localStorage.getItem("favorites");
+
     return savedFavorites ? JSON.parse(savedFavorites) : [];
   });
-  const [selectedCollection, setSelectedCollection] = useState("All Games");
+  
+  // Dark mode state, initialized from localStorage
   const [darkMode, setDarkMode] = useState(() => {
     return localStorage.getItem("darkMode") === "true";
   });
 
+  // Fetch game data when the app first loads
   useEffect(() => {
     async function fetchGames() {
       try {
@@ -47,29 +59,39 @@ function App() {
     fetchGames();
   }, []);
 
+  // Save dark mode preference whenever it changes
   useEffect(() => {
     localStorage.setItem("darkMode", darkMode);
   }, [darkMode]);
 
+  // Save favorites whenever the favorites list changes
   useEffect(() => {
     localStorage.setItem("favorites", JSON.stringify(favorites));
   }, [favorites]);
 
+  // Create a list of unique genres from the game data
   const genres = [
     "All",
     ...new Set(games.map((game) => game.genre)),
   ];
 
+  // Filter games based on search, genre, and selected collection
   const filteredGames = games.filter((game) => {
-    const matchesSearch = game.title.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSearch = game.title.
+      toLowerCase()
+      .includes(searchTerm.toLowerCase());
 
-    const matchesGenre = selectedGenre === "All" || game.genre === selectedGenre;
+    const matchesGenre = 
+      selectedGenre === "All" || game.genre === selectedGenre;
 
-    const matchesCollection = selectedCollection === "All Games" || favorites.includes(game.id);
+    const matchesCollection = 
+      selectedCollection === "All Games" 
+      || favorites.includes(game.id);
 
     return matchesSearch && matchesGenre && matchesCollection;
   });
 
+  // Create the result count message
   let gameCountMessage;
 
   if (filteredGames.length === 0) {
@@ -80,17 +102,20 @@ function App() {
     gameCountMessage = `${filteredGames.length} results`;
   }
 
+  // Determine whether the reset button should be disabled
   const isResetDisabled = 
     searchTerm === "" && 
     selectedGenre === "All" &&
     selectedCollection === "All Games";
 
+  // Reset all search and collection filters
   function resetFilters() {
     setSearchTerm("");
     setSelectedGenre("All");
     setSelectedCollection("All Games");
   }
 
+  // Add or remove a game from the favorites list
   function toggleFavorite(gameId) {
     setFavorites((prevFavorites) =>
       prevFavorites.includes(gameId)
@@ -100,7 +125,6 @@ function App() {
   }
 
   return (
-
     <main 
       className={`min-h-screen ${
         darkMode ? "bg-gray-950" : "bg-gray-100"
@@ -115,232 +139,39 @@ function App() {
         />
       ) : (
       <>
-        <div className="flex items-center justify-between">
-          <h1
-            className={`text-4xl font-bold ${
-              darkMode ? "text-white" : "text-gray-900"
-            }`}
-          >
-            Game Catalog
-          </h1>
+        <GameHeader
+          darkMode={darkMode}
+          onToggleDarkMode={() => setDarkMode(!darkMode)}
+        />
 
-          <div className="flex items-center gap-2">
-            <button
-              className={`relative h-8 w-13 rounded-full transition-colors ${
-                darkMode ? "bg-blue-400" : "bg-gray-400"
-              }`}
-              onClick={() => setDarkMode(!darkMode)}
-            >
-              <span
-                className={`absolute top-0.5 left-0.5 h-7 w-7 rounded-full bg-white transition-transform ${
-                  darkMode ? "translate-x-5" : "translate-x-0"
-                }`}
-              />
-            </button>
-
-            <span className={`text-base font-medium ${
-              darkMode ? "text-gray-300" : "text-gray-700"
-            }`}>
-              Dark Mode
-            </span>
-          </div>
-        </div>
-
-        <p 
-          className={`mt-4 mb-8 ${
-            darkMode ? "text-gray-300" : "text-gray-600"
-          }`}
-        >
-            Explore games and find your next favorite.
-        </p>
-
-        <SearchBar
+        <GameFilters
           searchTerm={searchTerm}
           onSearchChange={setSearchTerm}
           darkMode={darkMode}
+          genres={genres}
+          selectedGenre={selectedGenre}
+          setSelectedGenre={setSelectedGenre}
+          isGenreMenuOpen={isGenreMenuOpen}
+          setIsGenreMenuOpen={setIsGenreMenuOpen}
+          selectedCollection={selectedCollection}
+          setSelectedCollection={setSelectedCollection}
+          isCollectionMenuOpen={isCollectionMenuOpen}
+          setIsCollectionMenuOpen={setIsCollectionMenuOpen}
+          isResetDisabled={isResetDisabled}
+          resetFilters={resetFilters}
         />
 
-        <div className="mt-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="relative w-48">
-              <button
-                type="button"
-                onClick={() => setIsGenreMenuOpen(!isGenreMenuOpen)}
-                className={`flex w-full items-center justify-between rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  darkMode
-                    ? "border-gray-600 bg-gray-800 text-white hover:bg-gray-700"
-                    : "border-gray-300 bg-white text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                {selectedGenre === "All" ? "All Genres" : selectedGenre}
-
-                <ChevronDown
-                  size={16}
-                  className={`transition-transform ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  } ${isGenreMenuOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-
-              {isGenreMenuOpen && (
-                <div
-                  className={`absolute left-0 top-full z-20 mt-2 w-full overflow-hidden rounded-lg border p-1 shadow-lg ${
-                    darkMode
-                      ? "border-gray-700 bg-gray-800"
-                      : "border-gray-200 bg-white"
-                  }`}           
-                > 
-                  {genres.map((genre) => (
-                    <button
-                      key={genre}
-                      type="button"
-                      onClick={() => {
-                        setSelectedGenre(genre);
-                        setIsGenreMenuOpen(false);
-                      }}
-                      className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors ${
-                        selectedGenre === genre
-                          ? darkMode
-                            ? "bg-gray-700 text-white"
-                            : "bg-gray-100 text-gray-900"
-                          : darkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
-                      {genre === "All" ? "All Genres" : genre}
-
-                      {selectedGenre === genre && <Check size={16} />}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="relative w-48">
-              <button
-                type="button"
-                onClick={() => setIsCollectionMenuOpen(!isCollectionMenuOpen)}
-                className={`flex w-full items-center justify-between rounded-lg border px-4 py-2 text-sm font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                  darkMode
-                    ? "border-gray-600 bg-gray-800 text-white hover:bg-gray-700"
-                    : "border-gray-300 bg-white text-gray-900 hover:bg-gray-50"
-                }`}
-              >
-                {selectedCollection}
-
-                <ChevronDown
-                  size={16}
-                  className={`transition-transform ${
-                    darkMode ? "text-gray-400" : "text-gray-500"
-                  } ${isCollectionMenuOpen ? "rotate-180" : ""}`}
-                />
-              </button>
-              
-              {isCollectionMenuOpen && (
-                <div
-                  className={`absolute left-0 top-full z-20 mt-2 w-full overflow-hidden rounded-lg border p-1 shadow-lg ${
-                    darkMode
-                      ? "border-gray-700 bg-gray-800"
-                      : "border-gray-200 bg-white"
-                  }`}
-                >
-                  {["All Games", "Favorites"].map((collection) => (
-                    <button
-                      key={collection}
-                      type="button"
-                      onClick={() => {
-                        setSelectedCollection(collection);
-                        setIsCollectionMenuOpen(false);
-                      }}
-                      className={`flex w-full items-center justify-between rounded-md px-3 py-2 text-left text-sm transition-colors ${
-                        selectedCollection === collection
-                          ? darkMode
-                            ? "bg-gray-700 text-white"
-                            : "bg-gray-100 text-gray-900"
-                          : darkMode
-                            ? "text-gray-300 hover:bg-gray-700"
-                            : "text-gray-700 hover:bg-gray-100"
-                      }`}
-                    >
-                      {collection}
-
-                      {selectedCollection === collection && <Check size={16} />}
-                    </button>
-                  ))}
-            </div>
-            )}
-            </div>
-          </div>
-
-          <button
-            className={`flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
-              darkMode
-                ? "border-gray-600 text-gray-300 hover:bg-gray-800"
-                : "border-gray-300 text-gray-700 hover:bg-gray-200"
-            }`}
-            disabled={isResetDisabled}
-            onClick={resetFilters}
-          >
-
-          <RotateCcw size={16} />
-
-            Reset
-          </button>
-        
-      </div>
-
-        {!loading && !error && (
-          <p
-            className={`mt-4 text-sm ${
-              darkMode ? "text-gray-400" : "text-gray-500"
-            }`}
-          >
-            {gameCountMessage}
-          </p>
-        )}
-
-        {error && (
-          <p
-            className={`mt-6 max-w-sm rounded-lg p-4 ${
-              darkMode
-                ? "bg-red-950 text-red-300"
-                : "bg-red-100 text-red-700"
-            }`}
-          >
-            {error}
-          </p>
-        )}
-
-        {loading && (
-          <p className="mt-6 text-gray-500">
-            Loading games...
-          </p>
-        )}
-
-        {!loading && !error && filteredGames.length === 0 && (
-          <p className="mt-6 text-gray-500">
-            No games found. Try adjusting your search or filters.
-          </p>
-        )}
-
-        {!loading && !error && ( 
-          <section className="mt-6 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-3">
-            {filteredGames.map((game) => (
-              <GameCard
-                key={game.id}
-                title={game.title}
-                genre={game.genre}
-                game={game}
-                onSelect={setSelectedGame}
-                darkMode={darkMode}
-                isFavorite={favorites.includes(game.id)}
-                onToggleFavorite={() => toggleFavorite(game.id)}
-              />
-            ))}
-          </section>
-        )}
-        </>
+        <GameGrid
+          darkMode={darkMode}
+          loading={loading}
+          error={error}
+          gameCountMessage={gameCountMessage}
+          filteredGames={filteredGames}
+          favorites={favorites}
+          setSelectedGame={setSelectedGame}
+          toggleFavorite={toggleFavorite}
+        />
+      </>
       )}
       </div>
     </main>
