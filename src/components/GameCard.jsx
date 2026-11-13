@@ -1,4 +1,6 @@
-function GameCard( {title, genre, game, onSelect, darkMode }) {
+import { Heart } from "lucide-react";
+
+function GameCard( {title, genre, game, onSelect, darkMode, isFavorite, onToggleFavorite, }) {
 
   return (
     <div 
@@ -9,11 +11,29 @@ function GameCard( {title, genre, game, onSelect, darkMode }) {
       }`}
       onClick={() => onSelect(game)}
     >
+    <div className="relative">
       <img
         className="h-48 w-full object-cover"
-        src={game.image} 
-        alt={game.title} 
+        src={game.image}
+        alt={game.title}
       />
+
+      <button
+        type="button"
+        onClick={(event) => {
+          event.stopPropagation();
+          onToggleFavorite();
+        }}
+        className="absolute right-3 top-3 rounded-full bg-white/90 p-2 text-gray-700 shadow-md transition hover:scale-110"
+        aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
+      >
+        <Heart
+          size={20}
+          fill={isFavorite ? "currentColor" : "none"}
+          className={isFavorite ? "text-red-500" : "text-gray-600"}
+        />
+      </button>
+    </div>
 
     <div className="p-4">
       <h2 
