@@ -2,8 +2,15 @@ import express from "express";
 import "dotenv/config";
 
 const app = express();
+let accessToken = null;
+let tokenExpiration = null;
 
 async function getIgdbAccessToken() {
+
+  if (accessToken && tokenExpiration > Date.now() + 60_000) {
+    return accessToken;
+  }
+
   const clientId = process.env.IGDB_CLIENT_ID;
   const clientSecret = process.env.IGDB_CLIENT_SECRET;
 
@@ -36,7 +43,10 @@ async function getIgdbAccessToken() {
 
   const data = await response.json();
 
-  return data.access_token;
+  accessToken = data.access_token;
+  tokenExpiration = Date.now() + data.expires_in * 1000;
+
+  return accessToken;
 }
 
 app.get("/api/games", async (req, res) => {
