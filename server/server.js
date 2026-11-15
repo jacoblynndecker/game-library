@@ -36,8 +36,10 @@ async function getIgdbAccessToken() {
   );
 
   if (!response.ok) {
+    const errorDetails = await response.text();
+
     throw new Error(
-      `Twitch authentication failed: ${response.status}`
+      `Twitch authentication failed (${response.status}): ${errorDetails}`
     );
   }
 
@@ -111,7 +113,7 @@ app.get("/api/games", async (req, res) => {
 
         res.json(mappedGames);
   } catch (error) {
-    console.log("Error fetching games:", error);
+    console.error("Error fetching games:", error.message);
 
     res.status(500).json({
       error: "Something went wrong while fetching games",
