@@ -48,15 +48,23 @@ app.get("/api/games", async (req, res) => {
     const query = `
       fields
         name,
+        summary,
         genres.name,
         cover.image_id,
         screenshots.image_id,
         total_rating,
+        total_rating_count,
         first_release_date,
-        platforms.name;
-      where total_rating != null & cover != null;
-      sort total_rating desc;
-      limit 10;
+        platforms.name,
+        platforms.platform_logo.image_id,
+        involved_companies.company.name,
+        involved_companies.developer,
+        involved_companies.publisher;
+      where total_rating != null
+        & total_rating_count > 50
+        & cover != null;
+      sort total_rating_count desc;
+      limit 20;
     `;
 
         const response = await fetch(
@@ -87,6 +95,7 @@ app.get("/api/games", async (req, res) => {
         const mappedGames = data.map((game) => ({
           id: game.id,
           title: game.name,
+          description: game.summary ?? "No description available.",
           genre: game.genres?.[0]?.name ?? "Unknown",
           image: game.cover?.image_id
             ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
@@ -95,16 +104,31 @@ app.get("/api/games", async (req, res) => {
             ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.screenshots[0].image_id}.jpg`
             : null,
           rating: game.total_rating ?? null,
+          ratingCount: game.total_rating_count ?? 0,
           released: game.first_release_date
             ? new Date(game.first_release_date * 1000).toISOString()
             : null,
           platforms: (game.platforms ?? []).map((platform) => ({
-            platform,
+            platform: {
+              id: platform.id,
+              name: platform.name,
+              icon: platform.platform_logo?.image_id
+                ? `https://images.igdb.com/igdb/image/upload/t_logo_med/${platform.platform_logo.image_id}.png`
+                : null,
+            },
           })),
+          developers: (game.involved_companies ?? [])
+            .filter((company) => company.developer)
+            .map((company) => company.company?.name)
+            .filter(Boolean),
+          publishers: (game.involved_companies ?? [])
+            .filter((company) => company.publisher)
+            .map((company) => company.company?.name)
+            .filter(Boolean),
         }));
 
         res.json(mappedGames);
-        
+
   } catch (error) {
     console.log("Error fetching games:", error);
 

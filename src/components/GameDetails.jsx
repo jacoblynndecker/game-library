@@ -1,4 +1,4 @@
-import { ArrowLeft, Star, CalendarDays } from "lucide-react";
+import { ArrowLeft, Star, CalendarDays, Gamepad2 } from "lucide-react";
 
 function GameDetails({
   game,
@@ -55,19 +55,53 @@ function GameDetails({
             <div className="mt-6 flex flex-wrap items-center gap-5 text-sm text-gray-200">
 
               {/* Rating */}
-              <div className="flex items-center gap-2">
-                <Star
-                  size={18}
-                  className="fill-yellow-400 text-yellow-400"
-                />
+              <div className="flex items-center gap-3 rounded-xl border border-purple-500/30 bg-purple-500/10 px-5 py-3">
 
-                <span className="font-semibold text-white">
-                  {game.rating ?? "N/A"}
-                </span>
+                {/* Five-star rating */}
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const rating = (game.rating ?? 0) / 20;
+                    const fillPercentage = Math.max(
+                      0,
+                      Math.min(100, (rating - star + 1) * 100)
+                    );
 
-                <span className="text-gray-400">
-                  IGDB Rating
-                </span>
+                    return (
+                      <span key={star} className="relative">
+                        {/* Empty Star */}
+                        <Star
+                          size={25}
+                          className="text-gray-600"
+                        />
+
+                        {/* Filled portion */}
+                        <span 
+                          className="absolute inset-0 overflow-hidden"
+                          style={{width: `${fillPercentage}%` }}
+                        >
+                          <Star
+                            size={25}
+                            className="fill-purple-500 text-purple-500"
+                          />
+                        </span>
+                      </span>
+                    );
+                  })}
+                </div>
+
+                {/* Numerical rating */}
+                <div>
+                  <p className="text-2xl font-extrabold text-purple-400">
+                    {game.rating != null
+                      ? `${(game.rating /20).toFixed(1)}`
+                      : "N/A"}
+                  </p>
+
+                  <p className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                    IGDB Rating
+                  </p>
+                </div>
+
               </div>
 
               <div className="hidden h-5 w-px bg-gray-600 sm:block" />
@@ -95,8 +129,50 @@ function GameDetails({
         </div>
       </div>
 
-      {/* Additional game information */}
+      {/* Additional Game information */}
       <div className="p-8 md:p-12">
+        <section className="mb-10">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {/* Developers */}
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+                Developer
+              </h4>
+
+              <p className="mt-2">
+                {game.developers?.length
+                  ? game.developers.join(", ")
+                  : "Unknown"}
+              </p>
+            </div>
+
+            {/* Publishers */}
+            <div>
+              <h4 className="text-sm font-semibold uppercase tracking-wider text-gray-400">
+                Publisher
+              </h4>
+
+              <p className="mt-2">
+                {game.publishers?.length
+                  ? game.publishers.join(", ")
+                  : "Unknown"}
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Game description */}
+        <section className="mb-10">
+          <h3 className="text-xl font-bold">
+            About
+          </h3>
+
+          <p className={`mt-4 max-w-4xl leading-7 ${
+            darkMode ? "text-gray-300" : "text-gray-600"
+          }`}>
+            {game.description}
+          </p>
+        </section>
 
         {/* Platforms */}
         <section>
@@ -106,16 +182,31 @@ function GameDetails({
 
           <div className="mt-4 flex flex-wrap gap-3">
             {(game.platforms ?? []).map((item) => (
-              <span
+              <div
                 key={item.platform.id}
-                className={`rounded-lg border px-4 py-2 text-sm font-medium ${
+                className={`flex items-center gap-4 rounded-xl border px-5 py-4 ${
                   darkMode
                     ? "border-gray-700 bg-gray-800 text-gray-200"
                     : "border-gray-200 bg-gray-100 text-gray-700"
                 }`}
               >
-                {item.platform.name}
-              </span>
+                {item.platform.icon ? (
+                  <img
+                    src={item.platform.icon}
+                    alt={`${item.platform.name} logo`}
+                    className="h-10 w-10 object-contain"
+                  />
+                ) : (
+                  <Gamepad2
+                    size={32}
+                    className="text-gray-400"
+                  />
+                )}
+
+                <span className="text-base font-semibold">
+                  {item.platform.name}
+                </span>
+              </div>
             ))}
           </div>
         </section>
