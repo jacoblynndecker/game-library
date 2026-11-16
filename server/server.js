@@ -50,6 +50,7 @@ app.get("/api/games", async (req, res) => {
         name,
         genres.name,
         cover.image_id,
+        screenshots.image_id,
         total_rating,
         first_release_date,
         platforms.name;
@@ -90,6 +91,9 @@ app.get("/api/games", async (req, res) => {
           image: game.cover?.image_id
             ? `https://images.igdb.com/igdb/image/upload/t_cover_big/${game.cover.image_id}.jpg`
             : null,
+          heroImage: game.screenshots?.length
+            ? `https://images.igdb.com/igdb/image/upload/t_1080p/${game.screenshots[0].image_id}.jpg`
+            : null,
           rating: game.total_rating ?? null,
           released: game.first_release_date
             ? new Date(game.first_release_date * 1000).toISOString()
@@ -100,6 +104,7 @@ app.get("/api/games", async (req, res) => {
         }));
 
         res.json(mappedGames);
+        
   } catch (error) {
     console.log("Error fetching games:", error);
 
