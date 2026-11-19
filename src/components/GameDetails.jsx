@@ -1,10 +1,22 @@
-import { ArrowLeft, Star, CalendarDays, Gamepad2 } from "lucide-react";
+import { ArrowLeft, Star, CalendarDays } from "lucide-react";
+import PlatformIcon from "./PlatformIcon";
+import { platformFamilies } from "../utils/PlatformIcons";
 
 function GameDetails({
   game,
   onBack,
   darkMode
 }) {
+
+  const uniquePlatforms = [
+    ...new Map(
+      (game.platforms ?? []).map((item) => {
+        const family = platformFamilies[item.platform.id];
+
+        return [family ?? item.platform.id, { ...item, family }];
+      })
+    ).values(),
+  ];
 
   return (
     <div
@@ -125,6 +137,18 @@ function GameDetails({
               </div>
             </div>
 
+            {/* Platforms */}
+            <div className="mt-6 flex flex-wrap items-center gap-5">
+              {uniquePlatforms.map((item) => (
+                <PlatformIcon
+                  key={item.family ?? item.platform.id}
+                  platform={item.platform}
+                  family={item.family}
+                  darkMode={darkMode}
+                />
+              ))}
+            </div>
+
           </div>
         </div>
       </div>
@@ -172,43 +196,6 @@ function GameDetails({
           }`}>
             {game.description}
           </p>
-        </section>
-
-        {/* Platforms */}
-        <section>
-          <h3 className="text-xl font-bold">
-            Available Platforms
-          </h3>
-
-          <div className="mt-4 flex flex-wrap gap-3">
-            {(game.platforms ?? []).map((item) => (
-              <div
-                key={item.platform.id}
-                className={`flex items-center gap-4 rounded-xl border px-5 py-4 ${
-                  darkMode
-                    ? "border-gray-700 bg-gray-800 text-gray-200"
-                    : "border-gray-200 bg-gray-100 text-gray-700"
-                }`}
-              >
-                {item.platform.icon ? (
-                  <img
-                    src={item.platform.icon}
-                    alt={`${item.platform.name} logo`}
-                    className="h-10 w-10 object-contain"
-                  />
-                ) : (
-                  <Gamepad2
-                    size={32}
-                    className="text-gray-400"
-                  />
-                )}
-
-                <span className="text-base font-semibold">
-                  {item.platform.name}
-                </span>
-              </div>
-            ))}
-          </div>
         </section>
 
       </div>
