@@ -31,7 +31,7 @@ function GameDetails({
       <div
         className="relative min-h-[520px] bg-cover bg-center"
         style={{
-          backgroundImage: `url(${game.heroImage || game.image})`, 
+          backgroundImage: `url(${game.heroImage || game.image})`,
         }}
       >
 
